@@ -1,0 +1,11 @@
+# Git
+.git
+
+# Node modules
+node_modules
+
+# Unused source code
+temp
+
+# Markdown
+*.md
