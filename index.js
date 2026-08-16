@@ -9,6 +9,11 @@ import helmet from 'helmet';
 // Database connection
 import connectDB from './server/DbConnect.js';
 
+// Distributed fault-tolerance subsystem (Person C - Lance)
+import databaseService from './server/db/databaseService.js';
+import { createHealthRouter } from './distributed/healthRouter.js';
+import { selfRole } from './distributed/config.js';
+
 // Routers
 import indexRouter from './server/api/index.js';
 import signupRouter from './server/api/signup.js';
@@ -53,6 +58,23 @@ Handlebars.registerHelper('eq', function (a, b) {
 	return a === b;
   });
   
+// Health endpoints for failure detection (GET /health, /health/ready).
+// The failure detector / monitor node probes /health to decide if this node is
+// UP or DOWN; /health/ready reports 503 when the database node is unreachable.
+app.use(
+	createHealthRouter({
+		role: selfRole,
+		dependencies: {
+			db: async () => {
+				const status = databaseService.getStatus();
+				// Confirm liveness with an actual ping when the driver claims connected.
+				if (status.connected) await databaseService.ping();
+				return databaseService.getStatus();
+			},
+		},
+	}),
+);
+
 app.use('/', indexRouter);
 app.use('/', signupRouter);
 app.use('/', productsRouter);

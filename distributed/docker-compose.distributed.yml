@@ -1,0 +1,69 @@
+# -----------------------------------------------------------------------------
+# Docker Compose for the distributed pieces: the database node and the
+# cluster monitor. Self-contained so it can be brought up independently of the
+# view/app nodes (or merged into the team's top-level compose later).
+#
+#   docker compose -f distributed/docker-compose.distributed.yml up --build
+#
+# Services:
+#   mongo        - the database itself (its own node/container).
+#   db-sidecar   - the HTTP health sidecar next to mongo (makes the DB node
+#                  observable at http://localhost:6000/health).
+#   monitor      - the cluster monitor + dashboard at http://localhost:7000/.
+#                  Probes view/app/db; set VIEW_URL/APP_URL to the real nodes.
+# -----------------------------------------------------------------------------
+
+services:
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  db-sidecar:
+    build:
+      context: ..            # project root (this file lives in distributed/)
+      dockerfile: Dockerfile
+    command: node distributed/dbHealthServer.js
+    restart: unless-stopped
+    environment:
+      NODE_ROLE: db
+      MONGODB_URI: mongodb://mongo:27017/enrollment
+      DB_HEALTH_PORT: "6000"
+      DB_SELECTION_TIMEOUT_MS: "1500"
+      DB_PING_INTERVAL_MS: "2000"
+    ports:
+      - "6000:6000"
+    depends_on:
+      - mongo
+
+  monitor:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    command: node distributed/monitor.js
+    restart: unless-stopped
+    environment:
+      NODE_ROLE: monitor
+      MONITOR_PORT: "7000"
+      # Point these at the real view/app nodes on your network.
+      VIEW_URL: http://host.docker.internal:4000
+      APP_URL: http://host.docker.internal:5000
+      DB_HEALTH_URL: http://db-sidecar:6000
+      HEARTBEAT_INTERVAL_MS: "2000"
+      SUSPECT_AFTER_MISSES: "2"
+      DOWN_AFTER_MISSES: "4"
+    ports:
+      - "7000:7000"
+    depends_on:
+      - db-sidecar
+
+volumes:
+  mongo-data:
