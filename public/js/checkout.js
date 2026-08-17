@@ -25,7 +25,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     document.getElementById('checkout-btn').onclick = function() {
-        openModal('checkout-modal');
+        alert('Checkout is currently disabled.')
+        //openModal('checkout-modal');
     }
 
     window.onclick = function(event) {

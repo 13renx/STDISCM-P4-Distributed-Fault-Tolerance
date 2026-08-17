@@ -88,8 +88,6 @@ app.use('/', productsRouter);
 app.use('/', shippingRouter);
 app.use('/', usersRouter);
 app.use('/', ordersRouter);
-app.use('/', usersRouter);
-app.use('/', indexRouter);
 app.use('/', cartRouter);
 app.use('/', adminRouter);
 app.use('/', profileRouter);
