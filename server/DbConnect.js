@@ -14,18 +14,36 @@
  *      background and DatabaseService.getStatus() reflects the current state.
  */
 
-import databaseService from './db/databaseService.js';
+// import databaseService from './db/databaseService.js';
 
-const connectDB = async () => {
+// const connectDB = async () => {
+//   try {
+//     await databaseService.connect();
+//     console.log('Connected to MongoDB');
+//     return databaseService;
+//   } catch (error) {
+//     console.error(`Database node unreachable (app will keep serving non-DB routes): ${error.message}`);
+//     return databaseService; // stay alive; do not exit the process.
+//   }
+// };
+
+// export default connectDB;
+// export { databaseService };
+import mongoose from "mongoose";
+import dotenv from "dotenv";
+dotenv.config();
+
+const dbUri = process.env.MONGODB_URI;
+
+const connectDB = () => {
   try {
-    await databaseService.connect();
-    console.log('Connected to MongoDB');
-    return databaseService;
+    const conn = mongoose.connect(dbUri);
+    console.log("Connected to MongoDB");
+    return conn;
   } catch (error) {
-    console.error(`Database node unreachable (app will keep serving non-DB routes): ${error.message}`);
-    return databaseService; // stay alive; do not exit the process.
+    console.error(`Failed to connect to MongoDB: ${error.message}`);
+    process.exit(1); 
   }
 };
 
 export default connectDB;
-export { databaseService };

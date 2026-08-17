@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test-side": "selenium-side-runner --config-file ./tests/selenium/.side.yml ./tests/selenium/tests.side", 
+    "test-side": "selenium-side-runner --config-file ./tests/selenium/.side.yml ./tests/selenium/tests.side",
     "start-server": "node index.js",
     "ci": "start-server-and-test start-server http://localhost:5000 test-side",
     "test-jest": "jest --coverage"
@@ -13,6 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "bcrypt": "6.0.0",
+    "connect-mongo": "^6.0.0",
     "dotenv": "^16.4.5",
     "express": "^4.18.3",
     "express-handlebars": "^8.0.1",
