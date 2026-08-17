@@ -11,6 +11,7 @@
   },
   "author": "",
   "license": "ISC",
+  "type": "module",
   "dependencies": {
     "bcrypt": "6.0.0",
     "connect-mongo": "^6.0.0",
@@ -24,7 +25,6 @@
     "mongodb": "^6.10.0",
     "mongoose": "^8.7.2"
   },
-  "type": "module",
   "devDependencies": {
     "@babel/core": "^7.26.0",
     "@babel/preset-env": "^7.26.0",
