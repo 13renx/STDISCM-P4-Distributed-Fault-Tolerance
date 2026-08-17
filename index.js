@@ -29,7 +29,8 @@ import profileRouter from './server/api/profile.js'
 
 const app = express();
 const PORT = process.env.PORT;
-const LOGIN_URL = process.env.LOGIN_URL;
+const LOGIN_PUBLIC_URL = process.env.LOGIN_PUBLIC_URL;
+const LOGIN_API_URL = process.env.LOGIN_API_URL;
 dotenv.config();
 connectDB();
 
@@ -94,8 +95,20 @@ app.use('/', adminRouter);
 app.use('/', profileRouter);
 app.use('/login', (req, res) => {
 	console.log('getLogin() called');
-	res.redirect(`${LOGIN_URL}/login`);
+	res.redirect(`${LOGIN_PUBLIC_URL}/login`);
 });
+app.use('/api/logout', (req, res) => {
+	console.log('logout() called');
+
+	req.session.destroy((err) => {
+		if(!err) {
+			res.status(200).json({ message: 'Logout successful!' });
+		} else {
+			console.error(err);
+			res.status(500).json({ error: error.message });
+		}
+	});
+})
 
 /**
  * Middleware function to handle 404 errors.
@@ -115,5 +128,5 @@ app.use((req, res) => {
 });
 
 app.listen(PORT, () => {
-	console.log(`Server running at http://localhost:${PORT}`);
+	console.log(`Main server running at http://localhost:${PORT}`);
 });

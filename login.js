@@ -24,7 +24,8 @@ import profileRouter from './server/api/profile.js'
 
 const app = express();
 const PORT = process.env.PORT;
-const MAIN_URL = process.env.MAIN_URL;
+const MAIN_PUBLIC_URL = process.env.MAIN_PUBLIC_URL;
+const MAIN_API_URL = process.env.MAIN_API_URL;
 dotenv.config();
 connectDB();
 
@@ -65,7 +66,7 @@ app.use('/', signupRouter);
 app.use('/', loginRouter);
 app.use('/', (req, res) => {
 	console.log('getIndex() called');
-	res.redirect(`${MAIN_URL}`);
+	res.redirect(`${MAIN_PUBLIC_URL}`);
 });
 
 /**
@@ -86,5 +87,5 @@ app.use((req, res) => {
 });
 
 app.listen(PORT, () => {
-	console.log(`Server running at http://localhost:${PORT}`);
+	console.log(`Login server running at http://localhost:${PORT}`);
 });

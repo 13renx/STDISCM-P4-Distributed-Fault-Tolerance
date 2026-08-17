@@ -3,6 +3,9 @@ services:
     image: mongo:7
     ports:
       - "27018:27017"
+    networks:
+      p4-net:
+        ipv4_address: 172.20.0.10
 
   main:
     build:
@@ -14,9 +17,13 @@ services:
       - "5000:5000"
     environment:
       - PORT=5000
-      - MONGODB_URI=mongodb://db:27017/
+      - MONGODB_URI=mongodb://172.20.0.10:27017/
       - SESSION_SECRET=secretkey
-      - LOGIN_URL=http://localhost:5001
+      - LOGIN_API_URL=http://172.20.0.12:5001    # main -> login backend
+      - LOGIN_PUBLIC_URL=http://localhost:5001   # main -> tells browser to go here
+    networks:
+      p4-net:
+        ipv4_address: 172.20.0.11
     develop:
       watch:
         - action: sync
@@ -55,9 +62,13 @@ services:
       - "5001:5001"
     environment:
       - PORT=5001
-      - MONGODB_URI=mongodb://db:27017/
+      - MONGODB_URI=mongodb://172.20.0.10:27017/
       - SESSION_SECRET=secretkey
-      - MAIN_URL=http://localhost:5000
+      - MAIN_API_URL=http://172.20.0.11:5000     # login -> main backend
+      - MAIN_PUBLIC_URL=http://localhost:5000    # login -> tells browser
+    networks:
+      p4-net:
+        ipv4_address: 172.20.0.12
     develop:
       watch:
         - action: sync
@@ -84,3 +95,10 @@ services:
         - action: rebuild
           path: ./login.Dockerfile
           target: /app/login.Dockerfile
+
+networks:
+  p4-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16  # this range must contain the 2 IPs above
