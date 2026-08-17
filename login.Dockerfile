@@ -8,4 +8,4 @@ EXPOSE 5001
 
 RUN npm install
 
-CMD ["node", "login.js"]
+CMD ["npx", "nodemon", "--legacy-watch", "login.js"]

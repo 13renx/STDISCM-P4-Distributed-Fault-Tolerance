@@ -29,6 +29,7 @@ import profileRouter from './server/api/profile.js'
 
 const app = express();
 const PORT = process.env.PORT;
+const LOGIN_URL = process.env.LOGIN_URL;
 dotenv.config();
 connectDB();
 
@@ -91,6 +92,10 @@ app.use('/', indexRouter);
 app.use('/', cartRouter);
 app.use('/', adminRouter);
 app.use('/', profileRouter);
+app.use('/login', (req, res) => {
+	console.log('getLogin() called');
+	res.redirect(`${LOGIN_URL}/login`);
+});
 
 /**
  * Middleware function to handle 404 errors.

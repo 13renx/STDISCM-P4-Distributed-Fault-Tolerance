@@ -24,6 +24,7 @@ import profileRouter from './server/api/profile.js'
 
 const app = express();
 const PORT = process.env.PORT;
+const MAIN_URL = process.env.MAIN_URL;
 dotenv.config();
 connectDB();
 
@@ -59,8 +60,13 @@ Handlebars.registerHelper('eq', function (a, b) {
 	return a === b;
   });
   
+app.use('/', usersRouter);
 app.use('/', signupRouter);
 app.use('/', loginRouter);
+app.use('/', (req, res) => {
+	console.log('getIndex() called');
+	res.redirect(`${MAIN_URL}`);
+});
 
 /**
  * Middleware function to handle 404 errors.

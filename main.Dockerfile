@@ -8,4 +8,4 @@ EXPOSE 5000
 
 RUN npm install
 
-CMD ["node", "index.js"]
+CMD ["npx", "nodemon", "--legacy-watch", "index.js"]
