@@ -3,6 +3,9 @@ services:
     image: mongo:7
     ports:
       - "27018:27017"
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d  # Mount seed folder
+      - ./volumes/db_data:/data/db  
     networks:
       p4-net:
         ipv4_address: 172.20.0.10
@@ -17,7 +20,7 @@ services:
       - "5000:5000"
     environment:
       - PORT=5000
-      - MONGODB_URI=mongodb://172.20.0.10:27017/
+      - MONGODB_URI=mongodb://172.20.0.10:27017/flowerbudsboutique
       - SESSION_SECRET=secretkey
       - LOGIN_API_URL=http://172.20.0.12:5001    # main -> login backend
       - LOGIN_PUBLIC_URL=http://localhost:5001   # main -> tells browser to go here
@@ -62,7 +65,7 @@ services:
       - "5001:5001"
     environment:
       - PORT=5001
-      - MONGODB_URI=mongodb://172.20.0.10:27017/
+      - MONGODB_URI=mongodb://172.20.0.10:27017/flowerbudsboutique
       - SESSION_SECRET=secretkey
       - MAIN_API_URL=http://172.20.0.11:5000     # login -> main backend
       - MAIN_PUBLIC_URL=http://localhost:5000    # login -> tells browser
