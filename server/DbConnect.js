@@ -35,15 +35,24 @@ dotenv.config();
 
 const dbUri = process.env.MONGODB_URI;
 
+// Do not exit the process on DB failure: the DB going down must not take the
+// rest of the app (routes unrelated to login) down with it. mongoose.connect()
+// rejects/emits asynchronously, so both the initial promise and later
+// connection errors are handled here instead of a try/catch.
 const connectDB = () => {
-  try {
-    const conn = mongoose.connect(dbUri);
-    console.log("Connected to MongoDB");
-    return conn;
-  } catch (error) {
-    console.error(`Failed to connect to MongoDB: ${error.message}`);
-    process.exit(1); 
-  }
+  mongoose.connection.on("error", (error) => {
+    console.error(`MongoDB connection error, app will keep serving non-DB routes: ${error.message}`);
+  });
+
+  return mongoose.connect(dbUri)
+    .then((conn) => {
+      console.log("Connected to MongoDB");
+      return conn;
+    })
+    .catch((error) => {
+      console.error(`Database unreachable, app will keep serving non-DB routes: ${error.message}`);
+      return null;
+    });
 };
 
 export default connectDB;
