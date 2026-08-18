@@ -39,7 +39,7 @@ app.use(session({
 		collectionName: 'sessions',
 		ttl: 60 * 60 * 24 // 1 day in seconds
 	}),
-	secret: process.env.SECRET_SESSION,
+	secret: process.env.SESSION_SECRET,
 	resave: false,
 	saveUninitialized: false,
 	cookie: { secure: false }
