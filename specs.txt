@@ -1,0 +1,16 @@
+# P4 - Distributed Fault Tolerance
+
+## Specifications
+Reuse an old web app and have the rest of its features active even when login is down.
+
+### Bonus
+1) Implementation of redundant database / persistence layer.
+2) Implementation of more features on its own node.
+
+### Deliverables
+1) Source code
+2) Video Demonstration
+3) Source code + build/compilation steps
+4) Slides containing the following:
+    - Key implementation steps
+    - Explanations on how fault tolerance is achieved.
