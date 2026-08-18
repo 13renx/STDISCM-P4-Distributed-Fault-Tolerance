@@ -1,7 +1,7 @@
 # P4 - Distributed Fault Tolerance
 
 ## Specifications
-Reuse an old web app and have the rest of its features active even when login is down.
+Reuse an old web app and have the rest of its features active even when login is down. Also, implement explicit networking.
 
 ### Bonus
 1) Implementation of redundant database / persistence layer.
